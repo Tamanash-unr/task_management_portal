@@ -1,0 +1,8 @@
+task_management_portal_backend/node_modules/*
+task_management_portal_backend/node_modules
+task_management_portal_backend/dist/*
+task_management_portal_backend/dist
+task_management_portal_backend/*.env
+task_management_portal_frontend/node_modules/*
+task_management_portal_frontend/node_modules
+task_management_portal_frontend/*.env

@@ -3,24 +3,24 @@ import { useNavigate } from "react-router-dom"
 import { useAuth } from "../auth/AuthContext"
 
 const Login: React.FC = () => {
-  const { isAuthenticated, login } = useAuth();
+  const { authState, handleLogin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if(isAuthenticated){
+    if(authState.isAuthenticated){
       navigate("/dashboard")
     }
   },[])
 
-  const handleLogin = () => {
-    login();
+  const login = () => {
+    handleLogin("jdoe");
     navigate("/dashboard");
   }
 
   return (
     <div>
       <h1>Login Page</h1>
-      <button onClick={handleLogin}>Log In</button>
+      <button onClick={login}>Log In</button>
     </div>
   )
 }

@@ -1,26 +1,53 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-
-interface AuthContextType {
-    isAuthenticated: boolean;
-    login: () => void;
-    logout: () => void;
-}
-
-const AuthContext = createContext<AuthContextType | null>(null);
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 
 interface AuthProviderProps {
     children: ReactNode;
 }
 
-export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
+type AuthState = {
+    isAuthenticated: boolean;
+    user: string | null;
+}
 
-    const login = () => setIsAuthenticated(true);
-    const logout = () => setIsAuthenticated(false);
+interface AuthContextType {
+    authState: AuthState;
+    handleLogin: (username: string) => void;
+    handleLogout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | null>(null);
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+    const [authState, setAuthState] = useState<AuthState>(() => {
+        const saved = localStorage.getItem("auth");
+        return saved ? JSON.parse(saved) : { isAuthenticated: false, user: null }
+    })
+
+    const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
+
+    useEffect(() => {
+        if(isAuthenticated){
+            console.info("Logged in To..")
+        }
+    }, [isAuthenticated])
+
+    const handleLogin = (username: string) => {
+        // const newAuth = { isAuthenticated: true, user: username };
+        // setAuthState(newAuth);
+        // localStorage.setItem("auth", JSON.stringify(newAuth))
+        loginWithRedirect()
+    };
+
+    const handleLogout = () => {
+        logout()
+        localStorage.removeItem("auth");
+        setAuthState({ isAuthenticated: false, user: null });
+    };
 
     return (
         <AuthContext.Provider
-            value={{ isAuthenticated, login, logout }}
+            value={{ authState, handleLogin, handleLogout }}
         >
             {children}
         </AuthContext.Provider>
