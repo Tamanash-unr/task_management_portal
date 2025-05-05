@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }, [isAuthenticated])
 
     const handleLogin = (username: string) => {
+        console.log(username)
         // const newAuth = { isAuthenticated: true, user: username };
         // setAuthState(newAuth);
         // localStorage.setItem("auth", JSON.stringify(newAuth))
